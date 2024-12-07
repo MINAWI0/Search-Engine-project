@@ -17,6 +17,8 @@ import java.util.Set;
 @Configuration
 public class AppConfig {
 
+
+
     @Bean
     public Tika tika() {
         return new Tika();

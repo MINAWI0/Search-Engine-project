@@ -21,5 +21,9 @@ public class Document {
     private String content;  // Full content of the document
     @Column(name = "doc_length", nullable = false)
     private Integer docLength;  // Total number of words/terms in the document
+    @Column(name = "file_path")
+    private String filePath;
+    @Column(name = "thumbnail_path")
+    private String thumbnailPath;
 
 }

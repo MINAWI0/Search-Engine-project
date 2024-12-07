@@ -16,8 +16,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class SearchService {
 
-    private final DocumentRepository documentRepository;
-    private final TermRepository termRepository;
     private final DocumentTermRepository documentTermRepository;
 
     public List<Document> search(String query, int limit) {
@@ -50,22 +48,18 @@ public class SearchService {
 
     private Map<Document, Double> calculateSimilarities(Map<String, Double> queryVector) {
         Map<Document, Double> similarities = new HashMap<>();
-
         // Get all documents that contain at least one term from the query
         Set<Document> documents = documentTermRepository.findByTermIn(queryVector.keySet())
                 .stream()
                 .map(DocumentTerm::getDocument)
                 .collect(Collectors.toSet());
-
         for (Document document : documents) {
             // Get document vector
             Map<String, Double> documentVector = getDocumentVector(document);
-
             // Calculate dot product of query vector and document vector
             double dotProduct = queryVector.entrySet().stream()
                     .mapToDouble(entry -> entry.getValue() * documentVector.getOrDefault(entry.getKey(), 0.0))
                     .sum();
-
             // Calculate cosine similarity
             double similarity = dotProduct / Math.sqrt(documentVector.values().stream().mapToDouble(Double::doubleValue).sum());
             similarities.put(document, similarity);

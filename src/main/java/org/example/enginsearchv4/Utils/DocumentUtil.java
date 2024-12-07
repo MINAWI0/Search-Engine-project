@@ -1,11 +1,16 @@
 package org.example.enginsearchv4.Utils;
 
+import org.apache.pdfbox.Loader;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.rendering.PDFRenderer;
 import org.apache.tika.exception.TikaException;
 import org.example.enginsearchv4.Repo.DocumentRepository;
 import org.example.enginsearchv4.model.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
@@ -56,12 +61,17 @@ public class DocumentUtil {
                     System.out.println("No content extracted from: " + documentFile.getName());
                     continue;
                 }
+                String absolutePath = documentFile.getAbsolutePath();
+                System.out.println("absolutePath = " + absolutePath);
+                String thumbnailPath = generateThumbnail(documentFile);
 
                 // Create a new Document object and set its properties
                 Document document = new Document();
                 document.setTitle(documentFile.getName());
                 document.setContent(content); // Store content without metadata
                 document.setDocLength(content.length());
+                document.setFilePath(absolutePath);
+                document.setThumbnailPath("/thumbnails/" + document.getTitle().replace(".pdf", "_thumbnail.png"));
 
                 // Save the document to the repository
                 documentRepository.save(document);
@@ -69,6 +79,25 @@ public class DocumentUtil {
             } catch (IOException | TikaException e) {
                 System.err.println("Error processing file " + documentFile.getName() + ": " + e.getMessage());
             }
+        }
+    }
+    private String generateThumbnail(File pdfFile ) throws IOException {
+        try (PDDocument document = Loader.loadPDF(pdfFile)) {
+            PDFRenderer pdfRenderer = new PDFRenderer(document);
+
+            // Render the first page as an image
+            BufferedImage image = pdfRenderer.renderImageWithDPI(0, 150); // 150 DPI is good for thumbnails
+
+            // Create a file to save the thumbnail
+            String thumbnailPath = pdfFile.getParent() + File.separator +
+                    pdfFile.getName().replace(".pdf", "_thumbnail.png");
+            File thumbnailFile = new File(thumbnailPath);
+
+            // Save the image as a PNG file
+            ImageIO.write(image, "PNG", thumbnailFile);
+            System.out.println("Thumbnail generated: " + thumbnailPath);
+
+            return thumbnailPath;
         }
     }
 }
