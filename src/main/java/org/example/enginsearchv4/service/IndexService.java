@@ -1,6 +1,5 @@
 package org.example.enginsearchv4.service;
 
-
 import lombok.RequiredArgsConstructor;
 import org.example.enginsearchv4.Repo.DocumentRepository;
 import org.example.enginsearchv4.Repo.DocumentTermRepository;
@@ -17,6 +16,7 @@ import java.util.Set;
 @Service
 @RequiredArgsConstructor
 public class IndexService {
+    private static final int BATCH_SIZE = 500;
     private final DocumentRepository documentRepository;
     private final TermRepository termRepository;
     private final DocumentTermRepository documentTermRepository;
@@ -24,13 +24,19 @@ public class IndexService {
 
     private void saveTerms(Set<String> terms) {
         terms.forEach(termText -> {
-            if (!termRepository.existsByTerm(termText)) {
-                Term term = new Term();
-                term.setTerm(termText);
-                term.setDocumentCount(1);
-                term.setIdfScore(0.0); // Initial IDF score
-                termRepository.save(term);
-            }
+            Term term = termRepository.findByTerm(termText)
+                    .map(existingTerm -> {
+                        existingTerm.setDocumentCount(existingTerm.getDocumentCount() + 1);
+                        return existingTerm;
+                    })
+                    .orElseGet(() -> {
+                        Term newTerm = new Term();
+                        newTerm.setTerm(termText);
+                        newTerm.setDocumentCount(1);
+                        newTerm.setIdfScore(0.0);
+                        return newTerm;
+                    });
+            termRepository.save(term);
         });
     }
 
