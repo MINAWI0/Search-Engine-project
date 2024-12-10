@@ -16,7 +16,6 @@ import java.util.Set;
 @Service
 @RequiredArgsConstructor
 public class IndexService {
-    private static final int BATCH_SIZE = 500;
     private final DocumentRepository documentRepository;
     private final TermRepository termRepository;
     private final DocumentTermRepository documentTermRepository;
@@ -65,7 +64,7 @@ public class IndexService {
     private Map<String, Double> calculateTF(Map<String, Double> termFrequencies, int docLength) {
         Map<String, Double> tfScores = new HashMap<>();
         termFrequencies.forEach((term, frequency) -> {
-            double tf = frequency / docLength;
+            double tf = Math.log10(frequency + 1);
             tfScores.put(term, tf);
         });
         return tfScores;
@@ -75,8 +74,7 @@ public class IndexService {
         long totalDocuments = documentRepository.count();
         termRepository.findAll().forEach(term -> {
             int documentFrequency = term.getDocumentCount();
-            // Add smoothing factor
-            double idf = Math.log10((double) (totalDocuments + 1) / (documentFrequency + 1));
+            double idf = Math.log10((double) (totalDocuments) / (documentFrequency));
             term.setIdfScore(idf);
             termRepository.save(term);
         });
