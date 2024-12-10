@@ -25,17 +25,8 @@ public class SearchController {
         return "search";
     }
 
-//    @GetMapping("/search")
-//    public ResponseEntity<List<DocumentDTO>> search(@RequestParam("query") String query,
-//                                                    @RequestParam("limit") int limit) {
-//        List<Document> results = searchService.search(query, limit);
-//        List<DocumentDTO> dtos = results.stream()
-//                .map(DocumentDTO::fromDocument)
-//                .collect(Collectors.toList());
-//        return ResponseEntity.ok(dtos);
-//    }
-@GetMapping("/search")
-public String search(@RequestParam("query") String query,
+    @GetMapping("/search")
+    public String search(@RequestParam("query") String query,
                      @RequestParam(value = "limit", defaultValue = "10") int limit,
                      Model model) {
     List<Document> results = searchService.search(query, limit);

@@ -67,14 +67,6 @@ public class SearchService {
         return similarities;
     }
 
-//    private Map<String, Double> getDocumentVector(Document document) {
-//        Map<String, Double> documentVector = new HashMap<>();
-//        List<DocumentTerm> documentTerms = documentTermRepository.findByDocument(document);
-//        for (DocumentTerm documentTerm : documentTerms) {
-//            documentVector.put(documentTerm.getTerm().getTerm(), documentTerm.getTfIdfScore());
-//        }
-//        return documentVector;
-//    }
 private Map<String, Double> getDocumentVector(Document document) {
     Map<String, Double> documentVector = new HashMap<>();
     List<DocumentTerm> documentTerms = documentTermRepository.findByDocument(document);
