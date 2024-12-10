@@ -18,6 +18,7 @@ import java.util.Set;
 public class IndexService {
     private static final int BATCH_SIZE = 500;
     private final DocumentRepository documentRepository;
+
     private final TermRepository termRepository;
     private final DocumentTermRepository documentTermRepository;
 
