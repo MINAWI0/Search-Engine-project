@@ -1,15 +1,15 @@
 package org.example.enginsearchv4.service;
 
 import lombok.RequiredArgsConstructor;
-import org.example.enginsearchv4.Repo.DocumentRepository;
 import org.example.enginsearchv4.Repo.DocumentTermRepository;
-import org.example.enginsearchv4.Repo.TermRepository;
 import org.example.enginsearchv4.model.Document;
 import org.example.enginsearchv4.model.DocumentTerm;
-import org.example.enginsearchv4.model.Term;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -67,12 +67,31 @@ public class SearchService {
         return similarities;
     }
 
-    private Map<String, Double> getDocumentVector(Document document) {
-        Map<String, Double> documentVector = new HashMap<>();
-        List<DocumentTerm> documentTerms = documentTermRepository.findByDocument(document);
-        for (DocumentTerm documentTerm : documentTerms) {
-            documentVector.put(documentTerm.getTerm().getTerm(), documentTerm.getTfIdfScore());
-        }
-        return documentVector;
+//    private Map<String, Double> getDocumentVector(Document document) {
+//        Map<String, Double> documentVector = new HashMap<>();
+//        List<DocumentTerm> documentTerms = documentTermRepository.findByDocument(document);
+//        for (DocumentTerm documentTerm : documentTerms) {
+//            documentVector.put(documentTerm.getTerm().getTerm(), documentTerm.getTfIdfScore());
+//        }
+//        return documentVector;
+//    }
+private Map<String, Double> getDocumentVector(Document document) {
+    Map<String, Double> documentVector = new HashMap<>();
+    List<DocumentTerm> documentTerms = documentTermRepository.findByDocument(document);
+
+    // Calcul de la norme du vecteur du document
+    double norm = 0.0;
+    for (DocumentTerm documentTerm : documentTerms) {
+        norm += Math.pow(documentTerm.getTfIdfScore(), 2);
     }
+    norm = Math.sqrt(norm);
+
+    // Normalisation du vecteur du document
+    for (DocumentTerm documentTerm : documentTerms) {
+        double normalizedScore = documentTerm.getTfIdfScore() / norm;
+        documentVector.put(documentTerm.getTerm().getTerm(), normalizedScore);
+    }
+    return documentVector;
+}
+
 }

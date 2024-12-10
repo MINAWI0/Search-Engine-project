@@ -34,6 +34,11 @@ public class TikaExtractionUtils {
     }
 
     private String removeStopWords(String text) throws IOException {
+        /*
+         Le texte nettoyé est converti en un flux de tokens (TokenStream) par englishAnalyzer.
+         Ce flux divise le texte en unités lexicales ou tokens (par exemple, les mots individuels).
+         Les stop words sont automatiquement ignorés par l'analyseur lors de cette étape.
+         */
         TokenStream tokenStream = englishAnalyzer.tokenStream(null, new StringReader(text));
 
         List<String> tokens = new ArrayList<>();

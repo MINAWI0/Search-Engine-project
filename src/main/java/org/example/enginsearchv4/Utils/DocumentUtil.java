@@ -70,7 +70,7 @@ public class DocumentUtil {
                 document.setTitle(documentFile.getName());
                 document.setContent(content); // Store content without metadata
                 document.setDocLength(content.length());
-                document.setFilePath(absolutePath);
+                document.setFilePath("/downloads/" + documentFile.getName());
                 document.setThumbnailPath("/thumbnails/" + document.getTitle().replace(".pdf", "_thumbnail.png"));
 
                 // Save the document to the repository
