@@ -13,29 +13,20 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 import java.util.stream.Collectors;
 
-//@RestController
+
 @RequiredArgsConstructor
 @Controller
 public class SearchController {
 
     private final SearchService searchService;
-    private final DocumentRepository documentRepository;
+
     @GetMapping("/")
     public String showSearchForm() {
         return "search";
     }
 
-//    @GetMapping("/search")
-//    public ResponseEntity<List<DocumentDTO>> search(@RequestParam("query") String query,
-//                                                    @RequestParam("limit") int limit) {
-//        List<Document> results = searchService.search(query, limit);
-//        List<DocumentDTO> dtos = results.stream()
-//                .map(DocumentDTO::fromDocument)
-//                .collect(Collectors.toList());
-//        return ResponseEntity.ok(dtos);
-//    }
-@GetMapping("/search")
-public String search(@RequestParam("query") String query,
+    @GetMapping("/search")
+    public String search(@RequestParam("query") String query,
                      @RequestParam(value = "limit", defaultValue = "10") int limit,
                      Model model) {
     List<Document> results = searchService.search(query, limit);

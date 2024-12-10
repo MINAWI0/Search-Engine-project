@@ -14,7 +14,7 @@ public class EnginSearchv4Application implements CommandLineRunner {
     @Autowired
     private DocumentUtil documentUtil;
 
-    @Value("${documents.base.path}")
+    @Value("${app.storage.download-path}")
     private String directoryPath;
     public static void main(String[] args) {
         SpringApplication.run(EnginSearchv4Application.class, args);
