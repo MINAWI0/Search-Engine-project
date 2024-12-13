@@ -91,7 +91,7 @@ This application allows users to:
 - Apache Tika
 - Apache Lucene (English Analyzer)
 - Lombok
-- MySQL (assumed from JPA configuration)
+- MySQL ( Docker )
 
 ## Features
 
@@ -128,7 +128,7 @@ This application allows users to:
 2. Configure database properties in `application.properties`
 3. Create necessary directories for document storage
 4. Run `mvn clean install`
-5. Start the application using `mvn spring-boot:run`
+5. Start the application using `/Search-Engine-project$ java -Xmx2g -Xms512m -Dpdfbox.rendering.tilingpaint.maxedge=512 -jar target/EnginSearchv4-0.0.1-SNAPSHOT.jar --THUMBNAIL_PATH=/home/ubuntu/engine/ --DOWNLOAD_PATH=/home/ubuntu/engine/`
 
 ## Usage
 
